@@ -14,18 +14,5 @@ class State(BaseModel, Base):
     __tablename__ = 'states'
 
     name = Column(String(128), nullable=False)
-    cities = relationship('City', cascade='all, delete',
-                          backref='state')
-
-    @property
-    def cities(self):
-        """Returns the list of City instances with
-           state_id equals to the current State.id"""
-
-        city_list = []
-        city_dict = storage.all(City)
-
-        for city in city_dict.values():
-            if city.state_id == self.id:
-                city_list.append(city)
-        return city_list
+    # Define the primary key column
+    id = Column(String(60), primary_key=True, nullable=False)

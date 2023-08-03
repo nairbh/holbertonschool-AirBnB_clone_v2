@@ -9,6 +9,7 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
+<<<<<<< HEAD
         """returns the list of objects of one type of class"""
         if cls is not None:
             cls_dict = {}
@@ -18,6 +19,17 @@ class FileStorage:
             return cls_dict
 	else:
             return FileStorage.__objects
+=======
+        """Returns a dictionary of models currently in storage"""
+        if cls is None:
+            return FileStorage.__objects
+        else:
+            new_dict = {}
+            for key in FileStorage.__objects:
+                if FileStorage.__objects[key].__class__ == cls:
+                    new_dict[key] = FileStorage.__objects[key]
+            return new_dict
+>>>>>>> 9ca78d2a420f64c7694ce7fae19745fdccc8c6fe
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -30,7 +42,7 @@ class FileStorage:
             temp.update(FileStorage.__objects)
             for key, val in temp.items():
                 temp[key] = val.to_dict()
-            json.dump(temp, f)
+            json.dump(temp, f, indent=2)
 
     def reload(self):
         """Loads storage dictionary from file"""
@@ -43,22 +55,33 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
+<<<<<<< HEAD
         """delete obj from __objects if it’s inside"""
         if obj is not None:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
             if key in FileStorage.__objects:
             del FileStorage.__objects[key]
+=======
+        """function that deletes an object"""
+        if obj:
+            del (FileStorage.__objects["{}.{}".format
+                                       (obj.__class__.__name__, obj.id)])
+
+    def close(self):
+        """ Function that call the reload method """
+        self.reload()
+>>>>>>> 9ca78d2a420f64c7694ce7fae19745fdccc8c6fe

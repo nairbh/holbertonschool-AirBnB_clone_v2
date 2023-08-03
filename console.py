@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 import shlex
 from datetime import datetime
+import json
 
 
 class HBNBCommand(cmd.Cmd):
@@ -116,52 +117,58 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """ Create an object of any class with given parameters """
         if not args:
             print("** class name missing **")
             return
 
-        arg_list = shlex.split(args)
+    # Split the input arguments into class name and params
+        arg_list = args.split()
         class_name = arg_list[0]
+        params = {}
 
+    # Validate class name
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        arg_list = arg_list[1:]
+    # Iterate through the rest of the args to parse the params
+        for param in arg_list[1:]:
+            key_value = param.split('=', 1)
 
-        params = {}
-
-        for param in arg_list:
-            if '=' not in param:
+        # Validate the format of key-value pair
+            if len(key_value) != 2:
+                print("** invalid format for param: {} **".format(param))
                 continue
 
-            key, value = param.split('=', 1)
+            key = key_value[0].replace('_', ' ')
+            value = key_value[1]
 
-            key = key.replace('_', ' ')
-
+        # Convert value to the appropriate data type if necessary
             if value.startswith('"') and value.endswith('"'):
                 value = value[1:-1]
-
                 value = value.replace('\\"', '"')
 
-            if key in HBNBCommand.types:
+            elif '.' in value:
                 try:
-                    value = HBNBCommand.types[key](value)
-
+                    value = float(value)
                 except ValueError:
-                    print(f"Invalid value for parameter '{key}': {value}")
-                    return
-       
-            if key == 'updated_at':
-                value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
-        
+                    print("** invalid format for float value: {} **".format(value))
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    print("** invalid format for int value: {} **".format(value))
+                    continue
+
             params[key] = value
 
+    # Create the instance and save it
         new_instance = HBNBCommand.classes[class_name](**params)
         new_instance.save()
+        print(new_instance.id)
 
-        print(new_instance)
 
     def help_create(self):
         """ Help information for the create method """
