@@ -116,58 +116,34 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class with given parameters """
-        if not args:
+    def do_create(self, line):
+        """Creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
+        """
+        try:
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            print("{}".format(obj.id))
+            for num in range(1, len(my_list)):
+                my_list[num] = my_list[num].replace('=', ' ')
+                attributes = shlex.split(my_list[num])
+                attributes[1] = attributes[1].replace('_', ' ')
+                try:
+                    var = eval(attributes[1])
+                    attributes[1] = var
+                except:
+                    pass
+                if type(attributes[1]) is not tuple:
+                    setattr(obj, attributes[0], attributes[1])
+            obj.save()
+        except SyntaxError:
             print("** class name missing **")
-            return
-
-    # Split the input arguments into class name and params
-        arg_list = args.split()
-        class_name = arg_list[0]
-        params = {}
-
-    # Validate class name
-        if class_name not in HBNBCommand.classes:
+        except NameError:
             print("** class doesn't exist **")
-            return
-
-    # Iterate through the rest of the args to parse the params
-        for param in arg_list[1:]:
-            key_value = param.split('=', 1)
-
-        # Validate the format of key-value pair
-            if len(key_value) != 2:
-                print("** invalid format for param: {} **".format(param))
-                continue
-
-            key = key_value[0].replace('_', ' ')
-            value = key_value[1]
-
-        # Convert value to the appropriate data type if necessary
-            if value.startswith('"') and value.endswith('"'):
-                value = value[1:-1]
-                value = value.replace('\\"', '"')
-
-            elif '.' in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    print("** invalid format for float value: {} **".format(value))
-                    continue
-            else:
-                try:
-                    value = int(value)
-                except ValueError:
-                    print("** invalid format for int value: {} **".format(value))
-                    continue
-
-            params[key] = value
-
-    # Create the instance and save it
-        new_instance = HBNBCommand.classes[class_name](**params)
-        new_instance.save()
-        print(new_instance.id)
 
 
     def help_create(self):
