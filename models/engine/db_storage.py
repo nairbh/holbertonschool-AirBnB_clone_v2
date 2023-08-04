@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """class file DBStorage"""
 
@@ -14,6 +13,7 @@ from models.place import Place
 from models.review import Review
 from models.user import User
 from models.state import State
+
 
 class DBStorage():
     """the DBStorage class"""
