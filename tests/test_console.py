@@ -99,7 +99,7 @@ class TestConsole(unittest.TestCase):
         cmd = HBNBCommand()
         with patch('sys.stdout', new=StringIO()) as fake_output:
             cmd.do_destroy("")
-            output = fake_output.getvalue().strip()                                    
+            output = fake_output.getvalue().strip()
             self.assertEqual(output, "** class name missing **")
             cmd.do_destroy("FakeModel")
             output = fake_output.getvalue().strip()
