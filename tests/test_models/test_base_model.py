@@ -10,7 +10,6 @@ import os
 
 class test_basemodel(unittest.TestCase):
     """ """
-
     def __init__(self, *args, **kwargs):
         """ """
         super().__init__(*args, **kwargs)
@@ -24,7 +23,7 @@ class test_basemodel(unittest.TestCase):
     def tearDown(self):
         try:
             os.remove('file.json')
-        except:
+        except ValueError:
             pass
 
     def test_default(self):
@@ -41,6 +40,7 @@ class test_basemodel(unittest.TestCase):
 
     def test_kwargs_int(self):
         """ """
+
         i = self.value()
         copy = i.to_dict()
         copy.update({1: 2})
@@ -49,6 +49,7 @@ class test_basemodel(unittest.TestCase):
 
     def test_save(self):
         """ Testing save """
+
         i = self.value()
         i.save()
         key = self.name + "." + i.id
@@ -60,7 +61,7 @@ class test_basemodel(unittest.TestCase):
         """ """
         i = self.value()
         self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
+                                                       i.__dict__))
 
     def test_todict(self):
         """ """
