@@ -18,15 +18,15 @@ def teardown_db(exception):
 @app.route('/states', strict_slashes=False)
 def states():
     ''' Function that return list of all states '''
-    all_states = storage.all(State).values()
-    return render_template('7-states_list.html', all_states=all_states)
+    states = storage.all(State).values()
+    return render_template('7-states_list.html', states=states)
 
 
 @app.route('/states/<id>', strict_slashes=False)
 def states_id(id):
     ''' Function that return list of all states '''
-    all_states = storage.all(State).values()
-    for state in all_states:
+    states = storage.all(State).values()
+    for state in states:
         if state.id == id:
             return render_template('9-states.html', state=state, id=True)
     return render_template('9-states.html')
