@@ -1,27 +1,32 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""This is the state class"""
+import models
 from models.base_model import BaseModel, Base
 from models.city import City
-from models import storage
-from os import getenv
-from sqlalchemy import Column, String
+import sqlalchemy
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 
 
 class State(BaseModel, Base):
-    """ State class """
-    __tablename__ = "states"
+    """This is the class for state"""
+
+    __tablename__ = 'states'
     name = Column(String(128), nullable=False)
-    if getenv("HBNB_TYPE_STORAGE") == "db":
-        cities = relationship("City", backref="state", cascade="all, delete",
-                              passive_deletes=True)
-    else:
+    cities = relationship('City', backref='state')
+
+    def __init__(self, *args, **kwargs):
+        """Inicialization inherited """
+        super().__init__(*args, **kwargs)
+
+    if models.storage_type != 'db':
         @property
         def cities(self):
-            """returns the list of City instances"""
-            new_list = []
-            all_cities = storage.all(City)
-            for element in all_cities.values():
-                if self.id == element.state_id:
-                    new_list.append(element)
-            return new_list
+            """Gets the list of City instances with state_id=State.id"""
+            city_list = []
+            all_city = models.storage.all(City)
+            for value in all_city.values():
+                if value.state_id == self.id:
+                    city_list.append(value)
+            return city_list
