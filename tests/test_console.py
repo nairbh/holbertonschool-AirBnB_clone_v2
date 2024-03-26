@@ -35,7 +35,7 @@ class TestDoCreate(unittest.TestCase):
             self.assertEqual("** class doesn't exist **\n", f.getvalue())
 
     def test_create_no_params(self):
-        """Test do_create with valid class name but no additional parameters."""
+        """Test do_create with valid class name but no additional param."""
         with patch('sys.stdout', new=StringIO()) as f:
             self.cli.onecmd("create BaseModel")
             # Output should be the id of the created object
@@ -44,7 +44,9 @@ class TestDoCreate(unittest.TestCase):
     def test_create_with_params(self):
         """Test do_create with valid class name and parameters."""
         with patch('sys.stdout', new=StringIO()) as f:
-            self.cli.onecmd('create BaseModel name="TestName" number=1234 float=12.45 underscore="Test_Name" backslash="\"Here"')
+            self.cli.onecmd('create BaseModel name="TestName" number=1234'
+                            'float=12.45 underscore="Test_Name"'
+                            'backslash="\"Here"')
             new_id = f.getvalue().strip()
             new_obj = storage.all()['BaseModel.' + new_id]
             self.assertEqual(new_obj.name, "TestName")
