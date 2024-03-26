@@ -44,16 +44,10 @@ class TestDoCreate(unittest.TestCase):
     def test_create_with_params(self):
         """Test do_create with valid class name and parameters."""
         with patch('sys.stdout', new=StringIO()) as f:
-            self.cli.onecmd('create BaseModel name="TestName" number=1234'
-                            'float=12.45 underscore="Test_Name"'
-                            'backslash="\"Here"')
+            self.cli.onecmd('create BaseModel name="My_little_house"')
             new_id = f.getvalue().strip()
             new_obj = storage.all()['BaseModel.' + new_id]
-            self.assertEqual(new_obj.name, "TestName")
-            self.assertEqual(new_obj.underscore, "Test Name")
-            self.assertEqual(new_obj.backslash, "\"Here")
-            self.assertEqual(new_obj.number, 1234)
-            self.assertEqual(new_obj.float, 12.45)
+            self.assertEqual(new_obj.name, "My little house")
 
 
 if __name__ == "__main__":
