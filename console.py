@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
                 key, value = key_value
                 # Replace underscores with spaces for string values
                 if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+                    value = value[1:-1].replace('_', ' ').replace('"', '\\')
                 # Convert to float if value contains a dot
                 elif '.' in value:
                     try:
