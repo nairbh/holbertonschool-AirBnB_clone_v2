@@ -114,17 +114,47 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
+        """Create an object of any class with given parameters."""
+        args_list = args.split()  # Split the argument string into individual components
+
+        if not args_list:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        class_name = args_list[0]
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        new_instance = HBNBCommand.classes[class_name]()
+
+        for arg in args_list[1:]:  # Iterate over the attribute key-value pairs
+            key_value = arg.split('=')  # Split each argument into key and value
+            if len(key_value) == 2:  # Ensure there is a key and a value
+                key, value = key_value
+                # Replace underscores with spaces for string values
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+                # Convert to float if value contains a dot
+                elif '.' in value:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        continue  # Skip invalid floats
+                # Convert to int if possible
+                else:
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        continue  # Skip invalid ints
+
+                setattr(new_instance, key, value)  # Set the attribute on the instance
+
+        new_instance.save()  # Save the instance to storage
         print(new_instance.id)
         storage.save()
+
 
     def help_create(self):
         """ Help information for the create method """
