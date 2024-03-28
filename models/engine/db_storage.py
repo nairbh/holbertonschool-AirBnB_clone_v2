@@ -1,10 +1,10 @@
 # models/engine/db_storage.py
+import os
+from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, session
 from sqlalchemy.ext.declarative import declarative_base
-import os
-from models.base_model import Base
-
+from models.base_model import BaseModel, Base
 from models import User, State, City, Amenity, Place, Review
 
 
