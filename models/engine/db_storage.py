@@ -1,16 +1,22 @@
 # models/engine/db_storage.py
 import os
 from os import getenv
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
-from models.base_model import Base
+import models
+from models.base_model import BaseModel, Base
 from models.user import User
 from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+
+
+classes = {"Amenity": Amenity, "City": City,
+           "Place": Place, "Review": Review, "State": State, "User": User}
 
 
 class DBStorage:
@@ -40,7 +46,6 @@ class DBStorage:
                 key = f'{cls.__name__}.{obj.id}'
                 obj_dict[key] = obj
         else:
-            classes = [User, State, City, Amenity, Place, Review]
             for cls in classes:
                 for obj in self.__session.query(cls).all():
                     key = f'{cls.__name__}.{obj.id}'
